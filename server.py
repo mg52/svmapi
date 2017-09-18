@@ -9,22 +9,22 @@ app = Flask(__name__)
 MONGO_URL = os.environ.get('MONGOHQ_URL') 
 client = MongoClient(MONGO_URL)
 #client = MongoClient('mongodb://localhost:27017/') #For Locally
-db = client['api-database-1']
+db = client['heroku_mlxjr59b']
 
 
 def generateApiKeyFunc():
     theKey = hexlify(os.urandom(15)).decode()
-    db.posts.insert_one({'apiKey': theKey})
+    db.keys.insert_one({'apiKey': theKey})
     return theKey
 
 def validateApiKey(theKey):
-    for doc in db.posts.find({}):
+    for doc in db.keys.find({}):
         if(theKey == doc["apiKey"]):
             return True
     return False
 """
 def checkApiKey(inputApiKey):
-    for doc in db.posts.find({}):
+    for doc in db.keys.find({}):
         if(inputApiKey == doc["apiKey"]):
             return True
     return False
@@ -34,7 +34,7 @@ def checkApiKey(inputApiKey):
 def require_appkey(view_function):
     @wraps(view_function)
     def decorated_function(*args, **kwargs):
-        for doc in db.posts.find({}):
+        for doc in db.keys.find({}):
             if request.args.get('key') and request.args.get('key') == doc["apiKey"]:
                 return view_function(*args, **kwargs)
         abort(401)
@@ -51,7 +51,7 @@ def checkTheKey(inputKey):
 @app.route('/getApiKeys', methods=['GET'])
 def getApiKeys():
     data = {'keys': []}
-    for doc in db.posts.find({}):
+    for doc in db.keys.find({}):
         data['keys'].append(doc["apiKey"])
     return jsonify(data)
 
