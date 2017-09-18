@@ -68,4 +68,4 @@ def put_user():
     return request.args["username"]
 
 if __name__ == '__main__':
-    app.run(debug=False, use_reloader=True)
+    app.run(host='0.0.0.0',port=int(os.environ.get("PORT", 5000)))
