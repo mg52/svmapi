@@ -68,10 +68,15 @@ def fun():
 @app.route('/train', methods=['POST'])
 @require_appkey
 def trainData():
-    x = request.args["x"]
+    str = request.args["x"]
+    input = list(map(int, str.replace('[', '').replace(']', '').split(',')))
+    x = [input[i:i+int(len(input)/(str.count('[') - 1))] for i in range(0, len(input), int(len(input)/(str.count('[') - 1)))]
     x = np.array(x)
-    y = request.args["y"]
+    
+    str2 = request.args["y"]
+    y = list(map(int, str2.replace('[', '').replace(']', '').split(',')))
     y = np.array(y)
+    
     try:
         clf.fit(x, y)
         return jsonify('Data Trained.')
@@ -81,7 +86,8 @@ def trainData():
 @app.route('/predict', methods=['POST'])
 @require_appkey
 def predictData():
-    x = request.args["x"]
+    str = request.args["x"]
+    x = list(map(int, str.replace('[', '').replace(']', '').split(',')))
     x = np.array(x)
     try:
         predictedData = clf.predict(x)
