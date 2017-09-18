@@ -6,7 +6,9 @@ from functools import wraps
 
 app = Flask(__name__)
 
-client = MongoClient('mongodb://localhost:27017/')
+MONGO_URL = os.environ.get('MONGOHQ_URL') 
+client = MongoClient(MONGO_URL)
+#client = MongoClient('mongodb://localhost:27017/') #For Locally
 db = client['api-database-1']
 
 
@@ -66,4 +68,4 @@ def put_user():
     return request.args["username"]
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
