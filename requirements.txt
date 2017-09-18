@@ -1,8 +1,2 @@
-MongoClient
-request
-abort
-Flask
-jsonify
-os
-hexlify
-wraps
+pymongo==3.5.1
+Flask==0.12.2
