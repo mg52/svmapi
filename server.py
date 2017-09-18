@@ -102,6 +102,7 @@ def predictData():
         clf = SVC()
         clf.fit(np.array(data['data']['x']), np.array(data['data']['y']))
         predicted = clf.predict(x)
+        print(predicted)
         return jsonify(predicted)
     except:
         return jsonify('ERROR: Data CANNOT Be Predicted.')
