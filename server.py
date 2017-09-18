@@ -93,7 +93,7 @@ def predictData():
     try:
         data = db.SVMData.find_one({'data.apiKey':request.args["key"]})
         data["data"]["predict"] = x
-        db.SVMData.update_one({'apiKey':request.args["key"]}, {"$set": data}, upsert=False)
+        db.SVMData.update_one({'data.apiKey':request.args["key"]}, {"$set": data}, upsert=False)
         #predictedData = clf.predict(x)
         return jsonify('Data Saved.')
     except:
