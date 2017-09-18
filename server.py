@@ -6,7 +6,7 @@ from functools import wraps
 
 app = Flask(__name__)
 
-MONGO_URL = os.environ.get('MONGOLAB_URI ') 
+MONGO_URL = os.environ.get('MONGOLAB_URI') 
 client = MongoClient(MONGO_URL)
 #client = MongoClient('mongodb://localhost:27017/') #For Locally
 db = client['heroku_mlxjr59b']
