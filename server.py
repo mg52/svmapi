@@ -103,7 +103,7 @@ def predictData():
         clf.fit(np.array(data['data']['x']), np.array(data['data']['y']))
         predicted = clf.predict(x)
         print(predicted)
-        return jsonify(predicted)
+        return jsonify(predicted[0])
     except:
         return jsonify('ERROR: Data CANNOT Be Predicted.')
 
