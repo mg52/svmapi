@@ -69,7 +69,9 @@ def fun():
 @require_appkey
 def trainData():
     x = request.args["x"]
+    x = np.array(x)
     y = request.args["y"]
+    y = np.array(y)
     try:
         clf.fit(x, y)
         return jsonify('Data Trained.')
@@ -80,6 +82,7 @@ def trainData():
 @require_appkey
 def predictData():
     x = request.args["x"]
+    x = np.array(x)
     try:
         predictedData = clf.predict(x)
         return jsonify(predictedData)
