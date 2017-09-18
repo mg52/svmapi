@@ -78,7 +78,7 @@ def trainData():
     y = np.array(y)
     
     try:
-        db.SVMData.insert_one({'data':{'apiKey': request.args["key"],'x' : x,'y' : y,'predict': [],'predicted': 0}})
+        db.SVMData.insert_one({"data": {"apiKey": request.args["key"],"x": x,"y": x,"predict": [],"predicted": 0}})
         #clf.fit(x, y)
         return jsonify('Data Trained.')
     except:
