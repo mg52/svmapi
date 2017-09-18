@@ -101,7 +101,7 @@ def predictData():
         data = db.SVMData2.find_one({'data.apiKey':request.args["key"]})
         clf = SVC()
         clf.fit(np.array(data['data']['x']), np.array(data['data']['y']))
-        predicted = clf.predict(np.array(x))
+        predicted = clf.predict(x)
         return jsonify(predicted)
     except:
         return jsonify('ERROR: Data CANNOT Be Predicted.')
