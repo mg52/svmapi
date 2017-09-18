@@ -91,10 +91,11 @@ def predictData():
     x = list(map(int, str.replace('[', '').replace(']', '').split(',')))
     x = np.array(x)
     try:
-        data = db.SVMData.find_one({'data.apiKey':request.args["key"]})
+        """data = db.SVMData.find_one({'data.apiKey':request.args["key"]})
         data["data"]["predict"] = x
         db.SVMData.update_one({'data.apiKey':request.args["key"]}, {"$set": data}, upsert=False)
         #predictedData = clf.predict(x)
+        return jsonify('Data Saved.')"""
         return jsonify('Data Saved.')
     except:
         return jsonify('ERROR: Data CANNOT Be Predicted.')
