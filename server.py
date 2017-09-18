@@ -13,7 +13,7 @@ client = MongoClient(MONGO_URL)
 #client = MongoClient('mongodb://localhost:27017/') #For Locally
 db = client['heroku_mlxjr59b']
 
-clf = SVC()
+#clf = SVC()
 
 def generateApiKeyFunc():
     theKey = hexlify(os.urandom(15)).decode()
@@ -78,7 +78,8 @@ def trainData():
     y = np.array(y)
     
     try:
-        clf.fit(x, y)
+        db.SVMData.insert_one('data':{'apiKey': request.args["key"],'x' : x,'y' : y,'predict': [],'predicted': 0})
+        #clf.fit(x, y)
         return jsonify('Data Trained.')
     except:
         return jsonify('ERROR: Data CANNOT Be Trained.')
@@ -90,8 +91,11 @@ def predictData():
     x = list(map(int, str.replace('[', '').replace(']', '').split(',')))
     x = np.array(x)
     try:
-        predictedData = clf.predict(x)
-        return jsonify(predictedData)
+        data = db.SVMData.find_one({'data.apiKey':request.args["key"]})
+        data["data"]["predict"] = x
+        db.SVMData.update_one({'apiKey':request.args["key"]}, {"$set": data}, upsert=False)
+        #predictedData = clf.predict(x)
+        return jsonify('Data Saved.')
     except:
         return jsonify('ERROR: Data CANNOT Be Predicted.')
 
