@@ -3,6 +3,8 @@ from flask import request, abort, Flask, jsonify
 import os
 from binascii import hexlify
 from functools import wraps
+import numpy as np
+from sklearn.svm import SVC
 
 app = Flask(__name__)
 
@@ -11,6 +13,7 @@ client = MongoClient(MONGO_URL)
 #client = MongoClient('mongodb://localhost:27017/') #For Locally
 db = client['heroku_mlxjr59b']
 
+clf = SVC()
 
 def generateApiKeyFunc():
     theKey = hexlify(os.urandom(15)).decode()
@@ -58,14 +61,30 @@ def getApiKeys():
 @app.route('/test', methods=['GET', 'POST'])
 def fun():
     if request.method == 'POST':
-        return 'Post Test OK'
+        return jsonify('Post Test OK')
     else:
-        return 'Get Test OK'
+        return jsonify('Get Test OK')
 
 @app.route('/train', methods=['POST'])
 @require_appkey
-def put_user():
-    return request.args["username"]
+def trainData():
+    x = request.args["x"]
+    y = request.args["y"]
+    try:
+        clf.fit(x, y)
+        return jsonify('Data Trained.')
+    except:
+        return jsonify('ERROR: Data CANNOT Be Trained.')
+    
+@app.route('/predict', methods=['POST'])
+@require_appkey
+def predictData():
+    x = request.args["x"]
+    try:
+        predictedData = clf.predict(x)
+        return jsonify(predictedData)
+    except:
+        return jsonify('ERROR: Data CANNOT Be Predicted.')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=int(os.environ.get("PORT", 5000)))
