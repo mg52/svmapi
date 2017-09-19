@@ -83,7 +83,9 @@ def trainData():
     y = list(map(float, str2.replace('[', '').replace(']', '').split(',')))
 
     try:
-        db.SVMData2.insert_one({"data": {"apiKey": request.args["key"], "x": x, "y": y}})
+        post = {"data": {"apiKey": request.args["key"], "x": x, "y": y}}
+        db.SVMData2.update_one({'data.apiKey':request.args["key"]}, {"$set": post}, upsert=True)
+        #db.SVMData2.insert_one({"data": {"apiKey": request.args["key"], "x": x, "y": y}})
         return jsonify('Data Trained.')
 
     except:
