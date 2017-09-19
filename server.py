@@ -45,23 +45,24 @@ def require_appkey(view_function):
 
     return decorated_function
 
-
+"""
 @app.route('/generateApiKey', methods=['GET'])
 def generateApiKey():
     return generateApiKeyFunc()
-
+"""
 
 @app.route('/validateApiKey/<inputKey>', methods=['GET'])
 def checkTheKey(inputKey):
     return jsonify(validateApiKey(inputKey))
 
-
+"""
 @app.route('/getApiKeys', methods=['GET'])
 def getApiKeys():
     data = {'keys': []}
     for doc in db.keys.find({}):
         data['keys'].append(doc["apiKey"])
     return jsonify(data)
+"""
 
 
 @app.route('/test', methods=['GET', 'POST'])
