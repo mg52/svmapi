@@ -39,7 +39,7 @@ def require_appkey(view_function):
     @wraps(view_function)
     def decorated_function(*args, **kwargs):
         for doc in db.keys.find({}):
-            if request.args.get('key') and request.args.get('key') == doc["apiKey"]:
+            if request.headers.get('key') and request.headers.get('key') == doc["apiKey"]:
                 return view_function(*args, **kwargs)
         abort(401)
 
@@ -76,17 +76,17 @@ def fun():
 @app.route('/train', methods=['POST'])
 @require_appkey
 def trainData():
-    str = request.args["x"]
+    str = request.form["x"]
     input = list(map(float, str.replace('[', '').replace(']', '').split(',')))
     x = [input[i:i + int(len(input) / (str.count('[') - 1))] for i in range(0, len(input), int(len(input) / (str.count('[') - 1)))]
 
-    str2 = request.args["y"]
+    str2 = request.form["y"]
     y = list(map(float, str2.replace('[', '').replace(']', '').split(',')))
 
     try:
-        post = {"data": {"apiKey": request.args["key"], "x": x, "y": y}}
-        db.SVMData2.update_one({'data.apiKey':request.args["key"]}, {"$set": post}, upsert=True)
-        #db.SVMData2.insert_one({"data": {"apiKey": request.args["key"], "x": x, "y": y}})
+        post = {"data": {"apiKey": request.form["key"], "x": x, "y": y}}
+        db.SVMData2.update_one({'data.apiKey':request.form["key"]}, {"$set": post}, upsert=True)
+        #db.SVMData2.insert_one({"data": {"apiKey": request.form["key"], "x": x, "y": y}})
         return jsonify('Data Trained.')
 
     except:
@@ -96,12 +96,12 @@ def trainData():
 @app.route('/predict', methods=['POST'])
 @require_appkey
 def predictData():
-    str = request.args["x"]
+    str = request.form["x"]
     input = list(map(float, str.replace('[', '').replace(']', '').split(',')))
     x = [input[i:i + int(len(input) / (str.count('[') - 1))] for i in range(0, len(input), int(len(input) / (str.count('[') - 1)))]
     
     try:
-        data = db.SVMData2.find_one({'data.apiKey':request.args["key"]})
+        data = db.SVMData2.find_one({'data.apiKey':request.form["key"]})
         clf = SVC()
         clf.fit(np.array(data['data']['x']), np.array(data['data']['y']))
         predicted = clf.predict(x)
