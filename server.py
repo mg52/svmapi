@@ -84,8 +84,8 @@ def trainData():
     y = list(map(float, str2.replace('[', '').replace(']', '').split(',')))
 
     try:
-        post = {"data": {"apiKey": request.form["key"], "x": x, "y": y}}
-        db.SVMData2.update_one({'data.apiKey':request.form["key"]}, {"$set": post}, upsert=True)
+        post = {"data": {"apiKey": request.headers["key"], "x": x, "y": y}}
+        db.SVMData2.update_one({'data.apiKey':request.headers["key"]}, {"$set": post}, upsert=True)
         #db.SVMData2.insert_one({"data": {"apiKey": request.form["key"], "x": x, "y": y}})
         return jsonify('Data Trained.')
 
@@ -101,7 +101,7 @@ def predictData():
     x = [input[i:i + int(len(input) / (str.count('[') - 1))] for i in range(0, len(input), int(len(input) / (str.count('[') - 1)))]
     
     try:
-        data = db.SVMData2.find_one({'data.apiKey':request.form["key"]})
+        data = db.SVMData2.find_one({'data.apiKey':request.headers["key"]})
         clf = SVC()
         clf.fit(np.array(data['data']['x']), np.array(data['data']['y']))
         predicted = clf.predict(x)
